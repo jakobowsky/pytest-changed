@@ -18,24 +18,12 @@ pytest-changed
     :target: https://ci.appveyor.com/project/gastrofix-gmbh/pytest-changed/branch/master
     :alt: See Build Status on AppVeyor
 
-A pytest plugin that finds changed test files and selects only functions that are affected for the test run.
-
-----
-
-This `pytest`_ plugin was generated with `Cookiecutter`_ along with `@hackebrot`_'s `cookiecutter-pytest-plugin`_ template.
-
+A pytest plugint that finds changed tests and runs only those.
 
 Features
 --------
 
-* TODO
-
-
-Requirements
-------------
-
-* TODO
-
+Passing the :code:`--changed` flag to your pytest run, you will not only select changed files but also identify the functions that have been changed.
 
 Installation
 ------------
@@ -48,7 +36,15 @@ You can install "pytest-changed" via `pip`_ from `PyPI`_::
 Usage
 -----
 
+You just have to invoke pytest and pass the :code:`--changed` flag to it::
+
+    $ pytest --changed
+
+Requirements
+------------
+
 * TODO
+
 
 Contributing
 ------------
@@ -78,3 +74,7 @@ If you encounter any problems, please `file an issue`_ along with a detailed des
 .. _`tox`: https://tox.readthedocs.io/en/latest/
 .. _`pip`: https://pypi.org/project/pip/
 .. _`PyPI`: https://pypi.org/project
+
+----
+
+This `pytest`_ plugin was generated with `Cookiecutter`_ along with `@hackebrot`_'s `cookiecutter-pytest-plugin`_ template.
