@@ -4,7 +4,7 @@ __pycache__/
 *$py.class
 
 # editors
-./idea
+.idea/
 
 # C extensions
 *.so
