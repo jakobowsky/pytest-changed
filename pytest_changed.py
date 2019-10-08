@@ -4,7 +4,6 @@ import os
 import re
 
 import _pytest
-import pathlib2
 from git import Repo
 
 MATCH_PATTERN = r".*(?:def|class)\s([a-zA-Z_0-9]*).*\:"
@@ -116,13 +115,12 @@ def get_changed_files_with_functions(config):
 
 
 def _is_test_file(file_path, test_file_convention):
-    path = pathlib2.Path(file_path)
     re_list = [
         item.replace(".", r"\.").replace("*", ".*")
         for item in test_file_convention
     ]
     re_string = r"(\/|^)" + r"|".join(re_list)
-    return bool(re.search(re_string, path.name))
+    return bool(re.search(re_string, file_path))
 
 
 def _remove_duplicates(seq):
