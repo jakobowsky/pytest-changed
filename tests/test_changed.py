@@ -5,53 +5,55 @@ try:
 except ImportError:
     from mock import MagicMock, patch
 
-GIT_DIFF_CHANGE_IN_FUNCTION = b'diff --git a/tests/dummy_test.py b/tests/dummy_test.py\n' \
-                              b'index 6575e440acc807efabcbc156b8683c6344b6fda4..11314b99949c7e987f050255fa4d0c6497c529bc 100644\n' \
-                              b'--- a/tests/dummy_test.py\n' \
-                              b'+++ b/tests/dummy_test.py\n' \
-                              b'@@ -4,6 +4,7 @@ import pytest\n' \
-                              b' class TestClassOne:\n' \
-                              b'\n' \
-                              b'     def test_class_one_test_one(self):\n' \
-                              b'+\n' \
-                              b'         assert 1 + 1 == 2\n' \
-                              b'\n' \
-                              b'     def test_class_one_test_two(self):\n' \
-                              b'         assert 1 + 1 == 2\n' \
-                              b'\n' \
-                              b'\n' \
-                              b' class TestClassTwo:\n' \
-                              b'\n' \
-                              b'     def test_class_two_test_one(self):\n' \
-                              b'         assert 1 + 1 == 2\n' \
-                              b'\n' \
-                              b'     def test_class_two_test_two(self):\n' \
-                              b'+\n' \
-                              b'         assert 1 + 1 == 2\n'
+GIT_DIFF_CHANGE_IN_FUNCTION = \
+    b'diff --git a/tests/dummy_test.py b/tests/dummy_test.py\n' \
+    b'index 6575e440acc807efabcbc156b8683c6344b6fda4..11314b99949c7e987f050255fa4d0c6497c529bc 100644\n' \
+    b'--- a/tests/dummy_test.py\n' \
+    b'+++ b/tests/dummy_test.py\n' \
+    b'@@ -4,6 +4,7 @@ import pytest\n' \
+    b' class TestClassOne:\n' \
+    b'\n' \
+    b'     def test_class_one_test_one(self):\n' \
+    b'+\n' \
+    b'         assert 1 + 1 == 2\n' \
+    b'\n' \
+    b'     def test_class_one_test_two(self):\n' \
+    b'         assert 1 + 1 == 2\n' \
+    b'\n' \
+    b'\n' \
+    b' class TestClassTwo:\n' \
+    b'\n' \
+    b'     def test_class_two_test_one(self):\n' \
+    b'         assert 1 + 1 == 2\n' \
+    b'\n' \
+    b'     def test_class_two_test_two(self):\n' \
+    b'+\n' \
+    b'         assert 1 + 1 == 2\n'
 
-GIT_DIFF_CHANGE_IN_CLASS = b'diff --git a/tests/dummy_test.py b/tests/dummy_test.py\n' \
-                           b'index 6575e440acc807efabcbc156b8683c6344b6fda4..11314b99949c7e987f050255fa4d0c6497c529bc 100644\n' \
-                           b'--- a/tests/dummy_test.py\n' \
-                           b'+++ b/tests/dummy_test.py\n' \
-                           b'@@ -4,6 +4,7 @@ import pytest\n' \
-                           b' class TestClassOne:\n' \
-                           b'+\n' \
-                           b'\n' \
-                           b'     def test_class_one_test_one(self):\n' \
-                           b'         assert 1 + 1 == 2\n' \
-                           b'\n' \
-                           b'     def test_class_one_test_two(self):\n' \
-                           b'         assert 1 + 1 == 2\n' \
-                           b'\n' \
-                           b'\n' \
-                           b' class TestClassTwo:\n' \
-                           b'+\n' \
-                           b'\n' \
-                           b'     def test_class_two_test_one(self):\n' \
-                           b'         assert 1 + 1 == 2\n' \
-                           b'\n' \
-                           b'     def test_class_two_test_two(self):\n' \
-                           b'         assert 1 + 1 == 2\n'
+GIT_DIFF_CHANGE_IN_CLASS = \
+    b'diff --git a/tests/dummy_test.py b/tests/dummy_test.py\n' \
+    b'index 6575e440acc807efabcbc156b8683c6344b6fda4..11314b99949c7e987f050255fa4d0c6497c529bc 100644\n' \
+    b'--- a/tests/dummy_test.py\n' \
+    b'+++ b/tests/dummy_test.py\n' \
+    b'@@ -4,6 +4,7 @@ import pytest\n' \
+    b' class TestClassOne:\n' \
+    b'+\n' \
+    b'\n' \
+    b'     def test_class_one_test_one(self):\n' \
+    b'         assert 1 + 1 == 2\n' \
+    b'\n' \
+    b'     def test_class_one_test_two(self):\n' \
+    b'         assert 1 + 1 == 2\n' \
+    b'\n' \
+    b'\n' \
+    b' class TestClassTwo:\n' \
+    b'+\n' \
+    b'\n' \
+    b'     def test_class_two_test_one(self):\n' \
+    b'         assert 1 + 1 == 2\n' \
+    b'\n' \
+    b'     def test_class_two_test_two(self):\n' \
+    b'         assert 1 + 1 == 2\n'
 
 
 def test_shows_changed_tests(testdir):
