@@ -93,7 +93,7 @@ def get_changed_names(diff: bytes) -> List[str]:
                 continue
 
         if current_name:
-            if "+" in line or "-" in line:
+            if line.startswith("+") or line.startswith("-"):
                 changed.append(current_name)
 
     return _remove_duplicates(changed)
