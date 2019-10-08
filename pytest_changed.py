@@ -69,7 +69,7 @@ def _write(config, message):
         writer.line(line)
 
 
-def get_changed_files(repo: Repo) -> Tuple[DiffIndex, DiffIndex]:
+def get_changed_files(repo):
     current_commit = repo.commit("HEAD~0")
     master_commit = repo.commit("origin/master")
 
@@ -80,7 +80,7 @@ def get_changed_files(repo: Repo) -> Tuple[DiffIndex, DiffIndex]:
     return modified, added
 
 
-def get_changed_names(diff: bytes) -> List[str]:
+def get_changed_names(diff):
     changed = list()
     current_name = ""
     for line in diff.split(b'\n'):
@@ -99,7 +99,7 @@ def get_changed_names(diff: bytes) -> List[str]:
     return _remove_duplicates(changed)
 
 
-def get_changed_files_with_functions(config) -> Dict:
+def get_changed_files_with_functions(config):
     repository = Repo(path=config.rootdir)
     _modified, _added = get_changed_files(repo=repository)
     test_file_convention = config._getini("python_files")
@@ -115,7 +115,7 @@ def get_changed_files_with_functions(config) -> Dict:
     return changed
 
 
-def _is_test_file(file_path: str, test_file_convention: List[str]) -> bool:
+def _is_test_file(file_path, test_file_convention):
     path = pathlib.Path(file_path)
     re_list = [
         item.replace(".", r"\.").replace("*", ".*")
