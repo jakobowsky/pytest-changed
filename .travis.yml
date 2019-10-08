@@ -22,6 +22,7 @@ matrix:
 
 install:
   - pip install tox
+  - pip install pathlib2==2.3.5
 
 script:
   - tox -e $TOX_ENV

@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
-import _pytest
 import os
 import pathlib
 import re
-from git import Repo, DiffIndex
-from typing import List, Tuple, Dict
+
+import _pytest
+from git import Repo
 
 MATCH_PATTERN = r".*(?:def|class)\s([a-zA-Z_0-9]*).*\:"
 
@@ -74,7 +74,7 @@ def get_changed_files(repo):
     master_commit = repo.commit("origin/master")
 
     diff_index = master_commit.diff(current_commit, create_patch=True)
-    modified  = diff_index.iter_change_type('M')
+    modified = diff_index.iter_change_type('M')
     added = diff_index.iter_change_type('A')
 
     return modified, added
