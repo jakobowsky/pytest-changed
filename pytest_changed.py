@@ -74,8 +74,8 @@ def get_changed_files(repo):
     master_commit = repo.commit("origin/master")
 
     diff_index = master_commit.diff(current_commit, create_patch=True)
-    modified: DiffIndex = diff_index.iter_change_type('M')
-    added: DiffIndex = diff_index.iter_change_type('A')
+    modified  = diff_index.iter_change_type('M')
+    added = diff_index.iter_change_type('A')
 
     return modified, added
 
