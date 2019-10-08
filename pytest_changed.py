@@ -83,7 +83,7 @@ def get_changed_names(diff):
     changed = list()
     current_name = ""
     for line in diff.split(b'\n'):
-        line = str(line, "utf-8").strip()
+        line = str(line.decode("utf-8"))
         match = re.search(MATCH_PATTERN, line)
         if match is not None:
             name = match.groups()[0].strip()
@@ -99,17 +99,18 @@ def get_changed_names(diff):
 
 
 def get_changed_files_with_functions(config):
-    repository = Repo(path=config.rootdir)
+    root_dir = str(config.rootdir)
+    repository = Repo(path=root_dir)
     _modified, _added = get_changed_files(repo=repository)
     test_file_convention = config._getini("python_files")
     changed = dict()
     for diff in _modified:
         if _is_test_file(diff.a_path, test_file_convention):
-            full_path = os.path.join(config.rootdir, diff.a_path)
+            full_path = os.path.join(root_dir, diff.a_path)
             changed[full_path] = get_changed_names(diff=diff.diff)
     for diff in _added:
         if _is_test_file(diff.b_path, test_file_convention):
-            full_path = os.path.join(config.rootdir, diff.a_path)
+            full_path = os.path.join(root_dir, diff.a_path)
             changed[full_path] = get_changed_names(diff=diff.diff)
     return changed
 

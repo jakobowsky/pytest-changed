@@ -94,11 +94,10 @@ def test_output_changed_function(get_changed_files_mock, testdir, config_mock):
 
     with patch("pytest_changed.Repo"):
         result = testdir.runpytest("--changed")
-        print(result.stdout.str())
-        assert "Changed test files... 1. {{" \
-               "'{}/dummy_test.py': [" \
+        assert "Changed test files... 1. {" \
+               "'%s/dummy_test.py': [" \
                "'test_class_one_test_one', " \
-               "'test_class_two_test_two']}}".format(testdir.tmpdir) in result.stdout.str()
+               "'test_class_two_test_two']}" % str(testdir.tmpdir) in result.stdout.str()
 
 
 @patch("pytest_changed.get_changed_files")
@@ -125,8 +124,7 @@ def test_output_changed_class_and_function(get_changed_files_mock, testdir, conf
 
     with patch("pytest_changed.Repo"):
         result = testdir.runpytest("--changed")
-        print(result.stdout.str())
-        assert "Changed test files... 1. {{" \
-               "'{}/dummy_test.py': [" \
+        assert "Changed test files... 1. {" \
+               "'%s/dummy_test.py': [" \
                "'TestClassOne', " \
-               "'TestClassTwo']}}".format(testdir.tmpdir) in result.stdout.str()
+               "'TestClassTwo']}" % str(testdir.tmpdir) in result.stdout.str()
