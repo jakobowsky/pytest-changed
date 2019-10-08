@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from unittest.mock import patch, MagicMock
+from mock import patch, MagicMock
 
 GIT_DIFF_CHANGE_IN_FUNCTION = b'diff --git a/tests/dummy_test.py b/tests/dummy_test.py\n' \
                               b'index 6575e440acc807efabcbc156b8683c6344b6fda4..11314b99949c7e987f050255fa4d0c6497c529bc 100644\n' \
