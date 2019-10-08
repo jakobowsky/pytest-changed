@@ -21,7 +21,9 @@ setup(
     maintainer_email='tech@gastrofix.com',
     license='Mozilla Public License 2.0',
     url='https://github.com/gastrofix-gmbh/pytest-changed',
-    description='A pytest plugin that finds changed test files and selects only functions that are affected for the test run.',
+    description='A pytest plugin that finds changed test files based on '
+                'git diff and selects only those unctions or classes that '
+                'really were changed for the test run.',
     long_description=read('README.rst'),
     py_modules=['pytest_changed'],
     python_requires='>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*',
