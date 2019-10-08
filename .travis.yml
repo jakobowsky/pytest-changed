@@ -22,8 +22,6 @@ matrix:
 
 install:
   - pip install tox
-  - pip install mock
-  - pip install pathlib2
 
 script:
   - tox -e $TOX_ENV
