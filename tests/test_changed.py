@@ -257,4 +257,5 @@ def test_output_added_file(
                "'%s/dummy_test.py': [" \
                "'TestClassOne', " \
                "'test_class_one_test_one', " \
-               "'test_class_one_test_two']}" % str(testdir.tmpdir) in result.stdout.str()
+               "'test_class_one_test_two']}" % str(testdir.tmpdir) in \
+               result.stdout.str()
