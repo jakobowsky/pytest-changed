@@ -240,7 +240,7 @@ def test_output_added_file(
     """
     diff = MagicMock()
     diff.diff = GIT_DIFF_ADDED_CODE
-    diff.a_path = "/dev_null"
+    diff.a_path = "/dev/null"
     diff.b_path = "dummy_test.py"
 
     modified_mock = MagicMock()
