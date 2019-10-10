@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import pytest
 
 try:
     from unittest.mock import MagicMock, patch
@@ -135,38 +136,16 @@ def test_output_no_changes(get_changed_files_mock, testdir, config_mock):
         assert "Changed test files... 0." in result.stdout.str()
 
 
+@pytest.mark.parametrize(
+    "git_diff",
+    [GIT_DIFF_CODE_REMOVED, GIT_DIFF_CHANGE_IN_CLASS]
+)
 @patch("pytest_changed.get_changed_files")
-def test_output_changed_function(get_changed_files_mock, testdir, config_mock):
-    """
-    In case of changes just to specific functions only their names
-    will be detected.
-    """
-    diff = MagicMock()
-    diff.diff = GIT_DIFF_CHANGE_IN_FUNCTION
-    diff.a_path = "dummy_test.py"
-
-    modified_mock = MagicMock()
-    modified_mock.__iter__ = MagicMock(return_value=iter([diff]))
-
-    added_mock = MagicMock()
-    added_mock.__iter__ = MagicMock(return_value=iter([]))
-
-    get_changed_files_mock.return_value = (modified_mock, added_mock)
-
-    with patch("pytest_changed.Repo"):
-        result = testdir.runpytest("--changed")
-        assert "Changed test files... 1. {" \
-               "'%s/dummy_test.py': [" \
-               "'test_class_one_test_one', " \
-               "'test_class_two_test_two']}" % str(testdir.tmpdir) in \
-               result.stdout.str()
-
-
-@patch("pytest_changed.get_changed_files")
-def test_output_changed_class_and_function(
+def test_output_removed_code(
         get_changed_files_mock,
         testdir,
-        config_mock
+        config_mock,
+        git_diff
 ):
     """
     In case of changes inside the class body, the class names should
@@ -179,7 +158,7 @@ def test_output_changed_class_and_function(
     that are contained.
     """
     diff = MagicMock()
-    diff.diff = GIT_DIFF_CHANGE_IN_CLASS
+    diff.diff = git_diff
     diff.a_path = "dummy_test.py"
 
     modified_mock = MagicMock()
@@ -198,39 +177,17 @@ def test_output_changed_class_and_function(
                "'TestClassTwo']}" % str(testdir.tmpdir) in result.stdout.str()
 
 
+@pytest.mark.parametrize(
+    "git_diff",
+    [GIT_DIFF_CHANGE_IN_FUNCTION, GIT_DIFF_CODE_REMOVED_IN_FUNCTION]
+)
 @patch("pytest_changed.get_changed_files")
-def test_output_removed_code(
+def test_output_removed_code_in_function(
         get_changed_files_mock,
         testdir,
-        config_mock
+        config_mock,
+        git_diff
 ):
-    """
-    In case of code was just removed it should still act the same as for any
-    other change be detected. If the removal happened on class level the whole
-    class must be detected as changed.
-    """
-    diff = MagicMock()
-    diff.diff = GIT_DIFF_CODE_REMOVED
-    diff.a_path = "dummy_test.py"
-
-    modified_mock = MagicMock()
-    modified_mock.__iter__ = MagicMock(return_value=iter([diff]))
-
-    added_mock = MagicMock()
-    added_mock.__iter__ = MagicMock(return_value=iter([]))
-
-    get_changed_files_mock.return_value = (modified_mock, added_mock)
-
-    with patch("pytest_changed.Repo"):
-        result = testdir.runpytest("--changed")
-        assert "Changed test files... 1. {" \
-               "'%s/dummy_test.py': [" \
-               "'TestClassOne', " \
-               "'TestClassTwo']}" % str(testdir.tmpdir) in result.stdout.str()
-
-
-@patch("pytest_changed.get_changed_files")
-def test_output_removed_function(get_changed_files_mock, testdir, config_mock):
     """
     In case of code removal just to specific functions
     their names will also be detected.
