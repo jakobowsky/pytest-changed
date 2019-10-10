@@ -110,7 +110,7 @@ def get_changed_files_with_functions(config):
             changed[full_path] = get_changed_names(diff=diff.diff)
     for diff in _added:
         if _is_test_file(diff.b_path, test_file_convention):
-            full_path = os.path.join(root_dir, diff.a_path)
+            full_path = os.path.join(root_dir, diff.b_path)
             changed[full_path] = get_changed_names(diff=diff.diff)
     return changed
 
