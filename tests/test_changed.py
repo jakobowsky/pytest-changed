@@ -7,11 +7,11 @@ except ImportError:
     from mock import MagicMock, patch
 
 GIT_DIFF_CHANGE_IN_FUNCTION = \
-    b'diff --git a/tests/dummy_test.py b/tests/dummy_test.py\n' \
+    b'diff --git a/dummy_test.py b/dummy_test.py\n' \
     b'index 6575e440acc807efabcbc156b8683c6344b6fda4..' \
     b'11314b99949c7e987f050255fa4d0c6497c529bc 100644\n' \
-    b'--- a/tests/dummy_test.py\n' \
-    b'+++ b/tests/dummy_test.py\n' \
+    b'--- a/dummy_test.py\n' \
+    b'+++ b/dummy_test.py\n' \
     b'@@ -4,6 +4,7 @@ import pytest\n' \
     b' class TestClassOne:\n' \
     b'\n' \
@@ -33,11 +33,11 @@ GIT_DIFF_CHANGE_IN_FUNCTION = \
     b'         assert 1 + 1 == 2\n'
 
 GIT_DIFF_CHANGE_IN_CLASS = \
-    b'diff --git a/tests/dummy_test.py b/tests/dummy_test.py\n' \
+    b'diff --git a/dummy_test.py b/dummy_test.py\n' \
     b'index 6575e440acc807efabcbc156b8683c6344b6fda4..' \
     b'11314b99949c7e987f050255fa4d0c6497c529bc 100644\n' \
-    b'--- a/tests/dummy_test.py\n' \
-    b'+++ b/tests/dummy_test.py\n' \
+    b'--- a/dummy_test.py\n' \
+    b'+++ b/dummy_test.py\n' \
     b'@@ -4,6 +4,7 @@ import pytest\n' \
     b' class TestClassOne:\n' \
     b'+\n' \
@@ -59,11 +59,11 @@ GIT_DIFF_CHANGE_IN_CLASS = \
     b'         assert 1 + 1 == 2\n'
 
 GIT_DIFF_CODE_REMOVED = \
-    b'diff --git a/tests/dummy_test.py b/tests/dummy_test.py\n' \
+    b'diff --git a/dummy_test.py b/dummy_test.py\n' \
     b'index 6575e440acc807efabcbc156b8683c6344b6fda4..' \
     b'11314b99949c7e987f050255fa4d0c6497c529bc 100644\n' \
-    b'--- a/tests/dummy_test.py\n' \
-    b'+++ b/tests/dummy_test.py\n' \
+    b'--- a/dummy_test.py\n' \
+    b'+++ b/dummy_test.py\n' \
     b'@@ -4,6 +4,7 @@ import pytest\n' \
     b' class TestClassOne:\n' \
     b'\n' \
@@ -87,11 +87,11 @@ GIT_DIFF_CODE_REMOVED = \
     b'         assert 1 + 1 == 2\n'
 
 GIT_DIFF_CODE_REMOVED_IN_FUNCTION = \
-    b'diff --git a/tests/dummy_test.py b/tests/dummy_test.py\n' \
+    b'diff --git a/dummy_test.py b/dummy_test.py\n' \
     b'index 6575e440acc807efabcbc156b8683c6344b6fda4..' \
     b'11314b99949c7e987f050255fa4d0c6497c529bc 100644\n' \
-    b'--- a/tests/dummy_test.py\n' \
-    b'+++ b/tests/dummy_test.py\n' \
+    b'--- a/dummy_test.py\n' \
+    b'+++ b/dummy_test.py\n' \
     b'@@ -4,6 +4,7 @@ import pytest\n' \
     b' class TestClassOne:\n' \
     b'\n' \
@@ -113,6 +113,22 @@ GIT_DIFF_CODE_REMOVED_IN_FUNCTION = \
     b'\n' \
     b'     def test_class_two_test_two(self):\n' \
     b'         assert 1 + 1 == 2\n'
+
+GIT_DIFF_ADDED_CODE = \
+    b'diff --git a/dummy_test.py b/dummy_test.py\n' \
+    b'index 6575e440acc807efabcbc156b8683c6344b6fda4..' \
+    b'11314b99949c7e987f050255fa4d0c6497c529bc 100644\n' \
+    b'--- dev/null\n' \
+    b'+++ b/dummy_test.py\n' \
+    b'@@ -4,6 +4,7 @@ import pytest\n' \
+    b'+ class TestClassOne:\n' \
+    b'+\n' \
+    b'+     def test_class_one_test_one(self):\n' \
+    b'+\n' \
+    b'+         assert 1 + 1 == 2\n' \
+    b'+\n' \
+    b'+     def test_class_one_test_two(self):\n' \
+    b'+         assert 1 + 1 == 2\n'
 
 
 def test_shows_changed_tests(testdir):
@@ -211,3 +227,34 @@ def test_output_removed_code_in_function(
                "'test_class_one_test_one', " \
                "'test_class_two_test_one']}" % str(testdir.tmpdir) in \
                result.stdout.str()
+
+
+@patch("pytest_changed.get_changed_files")
+def test_output_added_file(
+        get_changed_files_mock,
+        testdir,
+        config_mock
+):
+    """
+    In case of files being added all tests of the file must be detected.
+    """
+    diff = MagicMock()
+    diff.diff = GIT_DIFF_ADDED_CODE
+    diff.a_path = "/dev_null"
+    diff.b_path = "dummy_test.py"
+
+    modified_mock = MagicMock()
+    modified_mock.__iter__ = MagicMock(return_value=iter([]))
+
+    added_mock = MagicMock()
+    added_mock.__iter__ = MagicMock(return_value=iter([diff]))
+
+    get_changed_files_mock.return_value = (modified_mock, added_mock)
+
+    with patch("pytest_changed.Repo"):
+        result = testdir.runpytest("--changed")
+        assert "Changed test files... 1. {" \
+               "'%s/dummy_test.py': [" \
+               "'TestClassOne', " \
+               "'test_class_one_test_one', " \
+               "'test_class_one_test_two']}" % str(testdir.tmpdir) in result.stdout.str()
