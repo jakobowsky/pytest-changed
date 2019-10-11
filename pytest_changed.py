@@ -112,13 +112,16 @@ def get_changed_files_with_functions(config):
     for diff in _added:
         filename = diff.b_path.rsplit("/")[-1]
         if _is_test_file(filename, test_file_convention):
-            full_path = os.path.join(root_dir, diff.a_path)
+            full_path = os.path.join(root_dir, diff.b_path)
             changed[full_path] = get_changed_names(diff=diff.diff)
     changed = filter_for_arguments(config.args, changed)
     return changed
 
 
 def filter_for_arguments(config_args, changed_files):
+    if not config_args:
+        return changed_files
+
     changed = dict()
     for config_arg in config_args:
         for path, names in changed_files.items():
