@@ -259,3 +259,32 @@ def test_output_added_file(
                "'test_class_one_test_one', " \
                "'test_class_one_test_two']}" % str(testdir.tmpdir) in \
                result.stdout.str()
+
+
+@patch("pytest_changed.get_changed_files")
+def test_output_file_not_in_args(
+        get_changed_files_mock,
+        testdir,
+        config_mock
+):
+    """
+    In case of files being added all tests of the file must be detected.
+    """
+    diff = MagicMock()
+    diff.diff = GIT_DIFF_ADDED_CODE
+    diff.a_path = "/dev/null"
+    diff.b_path = "dummy_test.py"
+
+    modified_mock = MagicMock()
+    modified_mock.__iter__ = MagicMock(return_value=iter([]))
+
+    added_mock = MagicMock()
+    added_mock.__iter__ = MagicMock(return_value=iter([diff]))
+
+    get_changed_files_mock.return_value = (modified_mock, added_mock)
+
+    tests_dir = testdir.mkdir("tests")
+
+    with patch("pytest_changed.Repo"):
+        result = testdir.runpytest("--changed", tests_dir)
+        assert "Changed test files... 0. {}" in result.stdout.str()

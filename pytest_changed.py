@@ -105,13 +105,28 @@ def get_changed_files_with_functions(config):
     test_file_convention = config._getini("python_files")
     changed = dict()
     for diff in _modified:
-        if _is_test_file(diff.a_path, test_file_convention):
+        filename = diff.a_path.rsplit("/")[-1]
+        if _is_test_file(filename, test_file_convention):
             full_path = os.path.join(root_dir, diff.a_path)
             changed[full_path] = get_changed_names(diff=diff.diff)
     for diff in _added:
-        if _is_test_file(diff.b_path, test_file_convention):
+        filename = diff.b_path.rsplit("/")[-1]
+        if _is_test_file(filename, test_file_convention):
             full_path = os.path.join(root_dir, diff.b_path)
             changed[full_path] = get_changed_names(diff=diff.diff)
+    changed = filter_for_arguments(config.args, changed)
+    return changed
+
+
+def filter_for_arguments(config_args, changed_files):
+    if not config_args:
+        return changed_files
+
+    changed = dict()
+    for config_arg in config_args:
+        for path, names in changed_files.items():
+            if config_arg in path:
+                changed[path] = names
     return changed
 
 
