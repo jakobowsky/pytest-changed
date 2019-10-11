@@ -105,12 +105,14 @@ def get_changed_files_with_functions(config):
     test_file_convention = config._getini("python_files")
     changed = dict()
     for diff in _modified:
-        if _is_test_file(diff.a_path, test_file_convention):
+        filename = diff.a_path.rsplit("/")[-1]
+        if _is_test_file(filename, test_file_convention):
             full_path = os.path.join(root_dir, diff.a_path)
             changed[full_path] = get_changed_names(diff=diff.diff)
     for diff in _added:
-        if _is_test_file(diff.b_path, test_file_convention):
-            full_path = os.path.join(root_dir, diff.b_path)
+        filename = diff.b_path.rsplit("/")[-1]
+        if _is_test_file(filename, test_file_convention):
+            full_path = os.path.join(root_dir, diff.a_path)
             changed[full_path] = get_changed_names(diff=diff.diff)
     return changed
 
