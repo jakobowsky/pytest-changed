@@ -55,9 +55,12 @@ def pytest_collection_modifyitems(session, config, items):
 
 
 def _display_affected_tests(config, files):
-    message = "Changed test {}... {}. {}"
-    files_msg = message.format("files", len(files), files)
-    _write(config, [files_msg])
+    header_message = "Changed test files... {}:".format(len(files))
+    files_messages = []
+    for filename, changed in files.items():
+        file_message = "+ {}:\n  {}"
+        files_messages.append(file_message.format(filename, changed))
+    _write(config, [header_message] + files_messages)
 
 
 def _write(config, message):
@@ -75,8 +78,9 @@ def get_changed_files(repo):
     diff_index = master_commit.diff(current_commit, create_patch=True)
     modified = diff_index.iter_change_type('M')
     added = diff_index.iter_change_type('A')
+    renamed = diff_index.iter_change_type('R')
 
-    return modified, added
+    return modified, added, renamed
 
 
 def get_changed_names(diff):
@@ -101,7 +105,7 @@ def get_changed_names(diff):
 def get_changed_files_with_functions(config):
     root_dir = str(config.rootdir)
     repository = Repo(path=root_dir)
-    _modified, _added = get_changed_files(repo=repository)
+    _modified, _added, _renamed = get_changed_files(repo=repository)
     test_file_convention = config._getini("python_files")
     changed = dict()
     for diff in _modified:
@@ -114,6 +118,15 @@ def get_changed_files_with_functions(config):
         if _is_test_file(filename, test_file_convention):
             full_path = os.path.join(root_dir, diff.b_path)
             changed[full_path] = get_changed_names(diff=diff.diff)
+    for diff in _renamed:
+        filename_b = diff.b_path.rsplit("/")[-1]
+        if _is_test_file(filename_b, test_file_convention):
+            full_a_path = os.path.join(root_dir, diff.a_path)
+            full_b_path = os.path.join(root_dir, diff.b_path)
+            if full_a_path in changed:
+                del changed[full_a_path]
+                changed[full_b_path] = get_changed_names(diff=diff.diff)
+            changed[full_b_path] = get_changed_names(diff=diff.diff)
     changed = filter_for_arguments(config.args, changed)
     return changed
 
