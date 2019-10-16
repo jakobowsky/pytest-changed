@@ -28,6 +28,15 @@ def create_dummy_test_file(testdir):
             def test_class_two_test_two(self):
                 assert 1 + 1 == 2
     """)
+    testdir.makepyfile(".py", dummy_2_test="""
+        class TestClassOne:
+
+            def test_class_one_test_one(self):
+                assert 1 + 1 == 2
+
+            def test_class_one_test_two(self):
+                assert 1 + 1 == 2
+    """)
 
 
 @pytest.fixture

@@ -55,7 +55,7 @@ def pytest_collection_modifyitems(session, config, items):
 
 
 def _display_affected_tests(config, files):
-    header_message = "Changed test files... {}:"
+    header_message = "Changed test files... {}:".format(len(files))
     files_messages = []
     for filename, changed in files.items():
         file_message = "+ {}:\n  {}"
